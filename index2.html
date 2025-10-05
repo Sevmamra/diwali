@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Diwali - A New Celebration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff9800;
+            --secondary: #ffc107;
+            --accent: #ff5722;
+            --dark: #0f0f23;
+            --light: #fff9c4;
+            --text: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+        
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.9), rgba(255, 152, 0, 0.2));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 0.8s ease-in-out;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #overlay-text {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            text-shadow: 0 0 15px var(--primary);
+            margin-bottom: 30px;
+            font-family: 'Great Vibes', cursive;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        #overlay-subtext {
+            font-size: 1.2rem;
+            color: var(--light);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        .diya-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 30px auto;
+        }
+        
+        .diya {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 10px var(--primary));
+            animation: flicker 2s infinite alternate;
+        }
+        
+        .flame {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 60px;
+            background: radial-gradient(ellipse at center, #ffeb3b 0%, #ff9800 70%, #ff5722 100%);
+            border-radius: 50% 50% 20% 20%;
+            filter: blur(5px);
+            animation: flame-flicker 1.5s infinite alternate;
+        }
+        
+        #sound-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        #sound-control:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        #sound-control i {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .main-content {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        #title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--secondary);
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #msg {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin: 25px 0;
+            min-height: 150px;
+            color: var(--light);
+            visibility: hidden;
+        }
+        
+        #from-line {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            margin: 20px 0;
+            color: var(--text);
+            visibility: hidden;
+        }
+        
+        #name-display {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .rangoli {
+            width: 100%;
+            max-width: 400px;
+            margin: 30px auto;
+            opacity: 0.8;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            animation: float-around 15s infinite linear;
+        }
+        
+        .floating-element:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
+        .floating-element:nth-child(3) { bottom: 30%; left: 5%; animation-delay: 4s; }
+        .floating-element:nth-child(4) { bottom: 10%; right: 10%; animation-delay: 6s; }
+        .floating-element:nth-child(5) { top: 40%; left: 20%; animation-delay: 8s; }
+        
+        .bottom-form {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.8);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            z-index: 5;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+        
+        form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .txt-input {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            width: 250px;
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .txt-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+        }
+        
+        .btn-submit {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .share-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .share-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .whatsapp { background: #25D366; }
+        .facebook { background: #3b5998; }
+        .twitter { background: #1DA1F2; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 10px var(--primary)); }
+            50% { opacity: 0.9; filter: drop-shadow(0 0 5px var(--primary)); }
+        }
+        
+        @keyframes flame-flicker {
+            0%, 100% { 
+                height: 60px; 
+                background: radial-gradient(ellipse at center, #ffeb3b 0%, #ff9800 70%, #ff5722 100%);
+            }
+            50% { 
+                height: 70px; 
+                background: radial-gradient(ellipse at center, #ffff72 0%, #ffb74d 70%, #ff7043 100%);
+            }
+        }
+        
+        @keyframes float-around {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, 20px) rotate(90deg); }
+            50% { transform: translate(0, 40px) rotate(180deg); }
+            75% { transform: translate(-20px, 20px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        
+        @keyframes glowing-text {
+            0%, 100% { text-shadow: 0 0 10px var(--secondary), 0 0 20px var(--primary); }
+            50% { text-shadow: 0 0 20px var(--secondary), 0 0 40px var(--primary), 0 0 60px var(--accent); }
+        }
+        
+        .typing::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #overlay-text { font-size: 2rem; }
+            #title { font-size: 2.5rem; }
+            .card { padding: 30px 20px; }
+            .bottom-form { flex-direction: column; }
+            form { width: 100%; justify-content: center; }
+            .txt-input { width: 200px; }
+        }
+        
+        @media (max-width: 480px) {
+            #overlay-text { font-size: 1.8rem; }
+            #title { font-size: 2rem; }
+            #msg { font-size: 1rem; }
+            #from-line { font-size: 1.5rem; }
+            .txt-input { width: 180px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <canvas id="fireworks-canvas"></canvas>
+    
+    <audio id="cracker-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-fireworks-bang-in-the-sky-2991.mp3" loop></audio>
+    <audio id="background-music" src="https://assets.mixkit.co/music/preview/mixkit-indian-traditional-prayer-331.mp3" loop></audio>
+
+    <div id="sound-control">
+        <i class="fas fa-volume-up"></i>
+    </div>
+
+    <div id="overlay">
+        <div class="diya-container">
+            <div class="flame"></div>
+            <svg class="diya" viewBox="0 0 100 100">
+                <path d="M30,70 Q50,30 70,70 L65,90 Q50,95 35,90 Z" fill="#ff9800" stroke="#ff5722" stroke-width="2"/>
+                <ellipse cx="50" cy="90" rx="25" ry="8" fill="#795548"/>
+            </svg>
+        </div>
+        <div id="overlay-text">🪔 Tap to Light Up Diwali 🪔</div>
+        <div id="overlay-subtext">Experience the magic of Diwali with this personalized greeting. Share the light and joy with your loved ones!</div>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <div class="floating-elements">
+                <div class="floating-element">🪔</div>
+                <div class="floating-element">✨</div>
+                <div class="floating-element">🎆</div>
+                <div class="floating-element">🌟</div>
+                <div class="floating-element">💫</div>
+            </div>
+            
+            <div class="diya-container">
+                <div class="flame"></div>
+                <svg class="diya" viewBox="0 0 100 100">
+                    <path d="M30,70 Q50,30 70,70 L65,90 Q50,95 35,90 Z" fill="#ff9800" stroke="#ff5722" stroke-width="2"/>
+                    <ellipse cx="50" cy="90" rx="25" ry="8" fill="#795548"/>
+                </svg>
+            </div>
+            
+            <h1 id="title"></h1>
+            <p id="msg"></p>
+            
+            <svg class="rangoli" viewBox="0 0 200 50">
+                <path d="M20,25 Q40,5 60,25 T100,25 T140,25 T180,25" stroke="#ffc107" stroke-width="2" fill="none"/>
+                <circle cx="20" cy="25" r="3" fill="#ff5722"/>
+                <circle cx="60" cy="25" r="3" fill="#ff5722"/>
+                <circle cx="100" cy="25" r="3" fill="#ff5722"/>
+                <circle cx="140" cy="25" r="3" fill="#ff5722"/>
+                <circle cx="180" cy="25" r="3" fill="#ff5722"/>
+                <path d="M30,15 Q50,35 70,15" stroke="#ff9800" stroke-width="1.5" fill="none"/>
+                <path d="M80,15 Q100,35 120,15" stroke="#ff9800" stroke-width="1.5" fill="none"/>
+                <path d="M130,15 Q150,35 170,15" stroke="#ff9800" stroke-width="1.5" fill="none"/>
+            </svg>
+            
+            <h2 id="from-line"><b>From: </b><span id="name-display"></span></h2>
+        </div>
+    </div>
+    
+    <div class="bottom-form">
+        <form>
+            <input type="text" name="n" class="txt-input" placeholder="Enter Your Name" autocomplete="off"/>
+            <input type="submit" value="Create Greeting" class="btn-submit"/>
+        </form>
+        <div class="share-buttons">
+            <a id="whatsapp-share" class="share-btn whatsapp" href="#" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a id="facebook-share" class="share-btn facebook" href="#" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a id="twitter-share" class="share-btn twitter" href="#" target="_blank">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@latest/dist/fireworks.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize particles.js background
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: ["#ff9800", "#ffc107", "#ff5722"] },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#ffc107",
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 2,
+                        direction: "none",
+                        random: true,
+                        out_mode: "out"
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "repulse" },
+                        onclick: { enable: true, mode: "push" }
+                    }
+                }
+            });
+        });
+
+        // --- Get HTML elements ---
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.querySelector('.main-content');
+        const bottomForm = document.querySelector('.bottom-form');
+        const fireworksCanvas = document.getElementById('fireworks-canvas');
+        const crackerSound = document.getElementById('cracker-sound');
+        const backgroundMusic = document.getElementById('background-music');
+        const soundControl = document.getElementById('sound-control');
+
+        // --- Elements for typewriter ---
+        const titleEl = document.getElementById('title');
+        const msgEl = document.getElementById('msg');
+        const fromLineEl = document.getElementById('from-line');
+        const nameDisplayEl = document.getElementById('name-display');
+
+        // --- Initialize Fireworks ---
+        const fireworks = new Fireworks(fireworksCanvas, {
+            rocketsPoint: 50, 
+            hue: { min: 0, max: 60 },
+            delay: { min: 10, max: 25 },
+            speed: 2, 
+            acceleration: 1.05, 
+            friction: 0.95, 
+            gravity: 1.5, 
+            particles: 100,
+            flickering: 50, 
+            trace: 3, 
+            explosion: 6, 
+            autoresize: true,
+            brightness: { min: 50, max: 80, decay: { min: 0.015, max: 0.03 } },
+            sound: { enabled: false }
+        });
+
+        // --- Typewriter Function ---
+        function typeWriter(element, text, speed) {
+            return new Promise(resolve => {
+                let i = 0;
+                function typing() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i); 
+                        i++;
+                        setTimeout(typing, speed);
+                    } else {
+                        element.style.animation = 'none';
+                        element.classList.remove('typing');
+                        resolve();
+                    }
+                }
+                element.innerHTML = '';
+                element.classList.add('typing');
+                typing();
+            });
+        }
+
+        // --- Animation Sequence ---
+        async function startAnimationSequence(name) {
+            const titleText = 'Happy Diwali';
+            const msgText = 'May the divine light of Diwali fill your life with peace, prosperity, happiness, and good health. Wishing you and your family a joyous and blessed Diwali filled with love and light!';
+            
+            titleEl.style.animation = 'glowing-text 2s ease-in-out infinite';
+            await typeWriter(titleEl, titleText, 120);
+            
+            msgEl.style.visibility = 'visible';
+            await typeWriter(msgEl, msgText, 30);
+            
+            fromLineEl.style.visibility = 'visible';
+            await typeWriter(nameDisplayEl, name, 100);
+        }
+
+        // --- Start Show on Click ---
+        function startShow() {
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 800);
+
+            // Show content and sound button
+            mainContent.style.visibility = 'visible'; 
+            mainContent.style.opacity = '1';
+            bottomForm.style.visibility = 'visible'; 
+            bottomForm.style.opacity = '1';
+            soundControl.style.visibility = 'visible'; 
+            soundControl.style.opacity = '1';
+
+            // Start everything
+            fireworks.start();
+            crackerSound.play().catch(e => console.log(e));
+            backgroundMusic.play().catch(e => console.log(e));
+
+            const name = getNameFromUrl() || 'Friend';
+            startAnimationSequence(name);
+        }
+        
+        overlay.addEventListener('click', startShow);
+
+        // --- Sound Control Logic ---
+        soundControl.addEventListener('click', () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                crackerSound.play();
+                soundControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                backgroundMusic.pause();
+                crackerSound.pause();
+                soundControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        });
+
+        // --- Name and Sharing Logic ---
+        function getNameFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let name = urlParams.get('n');
+            if (name) return name.charAt(0).toUpperCase() + name.slice(1);
+            return null;
+        }
+
+        function updateShareLinks(name) {
+            const pageUrl = window.location.href;
+            const message = encodeURIComponent(`🪔✨ *Happy Diwali, ${name}!* ✨🪔\n\nExperience this beautiful Diwali greeting made especially for you: ${pageUrl}`);
+            
+            document.getElementById('whatsapp-share').href = `https://api.whatsapp.com/send?text=${message}`;
+            document.getElementById('facebook-share').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+            document.getElementById('twitter-share').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Happy Diwali ${name}!`)}&url=${encodeURIComponent(pageUrl)}`;
+        }
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nameInput = this.querySelector('input[name="n"]');
+            if (nameInput.value.trim()) {
+                const name = nameInput.value.trim();
+                const newUrl = `${window.location.origin}${window.location.pathname}?n=${encodeURIComponent(name)}`;
+                window.history.pushState({}, '', newUrl);
+                
+                // Reset and retype with new name
+                titleEl.innerHTML = '';
+                msgEl.innerHTML = '';
+                msgEl.style.visibility = 'hidden';
+                fromLineEl.style.visibility = 'hidden';
+                nameDisplayEl.innerHTML = '';
+                
+                startAnimationSequence(name);
+                updateShareLinks(name);
+            }
+        });
+
+        window.onload = () => {
+            const name = getNameFromUrl() || 'Friend';
+            updateShareLinks(name);
+        };
+    </script>
+</body>
+</html>
