@@ -1,0 +1,132 @@
+body {
+    background: linear-gradient(135deg, #1a0022, #4d004d);
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(255, 215, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    width: 100%;
+    max-width: 450px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.diya-img {
+    width: 80px;
+    margin-bottom: 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+h1, h2 {
+    margin: 5px 0;
+    text-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800;
+}
+
+.main-heading {
+    font-family: 'Tiro Devanagari Hindi', serif;
+    font-size: 2.8em;
+    color: #ffd700;
+    font-weight: 600;
+}
+
+.message-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+#name-display {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.input-section, .share-section {
+    margin-top: 25px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.input-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#name-input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ffd700;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1em;
+    width: 60%;
+}
+
+#name-input::placeholder {
+    color: #ccc;
+}
+
+#create-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #ffd700;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#create-btn:hover {
+    background: #ffc107;
+}
+
+.share-buttons a {
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 5px;
+    display: inline-block;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.share-buttons a:hover {
+    transform: scale(1.05);
+}
+
+.whatsapp {
+    background-color: #25D366;
+}
+
+.facebook {
+    background-color: #1877F2;
+}
